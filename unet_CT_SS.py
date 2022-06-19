@@ -4,6 +4,8 @@
 Created on Thu Nov  9 13:18:46 2017
 
 @author: m131199
+
+edited by Abhinav Ganesh - 6/12/2022
 """
 
 import os
@@ -13,7 +15,7 @@ arg0 = sys.argv[0]
 print(arg0)
 
 
-code_dir=os.getcwd()
+code_dir='CT_BET'
 hour = str(time.localtime()[3])
 mins = str(time.localtime()[4])
 sec = str(time.localtime()[5])

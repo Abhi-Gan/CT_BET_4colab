@@ -4,13 +4,15 @@
 Created on Tue Aug 15 13:28:01 2017
 
 @author: m131199
+
+modified by Abhinav Ganesh 06/18/2022
 """
 
 import os
 import numpy as np
 from keras.layers.core import Lambda
 from keras.models import Model
-from keras.utils import multi_gpu_model
+from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
 from keras import backend as K
 from keras.layers import (Input, concatenate, Conv2D, 
                           MaxPooling2D, Conv2DTranspose, Activation, 
@@ -23,11 +25,15 @@ from deepModels import Unet, Unet3D
 from sklearn import metrics
 import nibabel as nb
 from sklearn.model_selection import KFold
-from keras.optimizers import Adam, SGD, RMSprop, Adadelta
+from tensorflow.keras.optimizers import Adam, SGD, RMSprop, Adadelta
 import SimpleITK as sitk
 from  scipy.ndimage.interpolation import zoom as interp3D
 from load3Ddata import arrangeData as arrange3Ddata
 from load3Ddata import arrange3DtestImage,arrange3DtestLabel 
+
+# more imports so I can save the masked image directly
+import nilearn
+import nilearn.masking
 
 class Unet_CT_SS(object):
 
@@ -553,6 +559,8 @@ class Unet_CT_SS(object):
       
     def Predict(self, weights): 
         test_images_path, test_labels_path = self.arrangeDataPath(self.root_folder,self.image_folder,self.mask_folder)
+        test_images_path = 'CT_BET/image_data'
+        test_labels_path = 'CT_BET/mask_data'
 
         print('-'*30)
         print('Loading saved weights...')
@@ -562,6 +570,8 @@ class Unet_CT_SS(object):
         model.load_weights(weights)
         print(test_images_path)
         for each in os.listdir(test_images_path):
+          #ignore things starting with a . (to get rid of .ipynb checkpoints)
+          if not each.startswith('.') :
             print('case: ', each)
             testImages, testLabels, affine = self.loadTestData(test_images_path,test_labels_path, each)  
             predImage = model.predict(testImages, batch_size=8, verbose=1)       
