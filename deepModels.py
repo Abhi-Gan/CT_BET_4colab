@@ -22,9 +22,10 @@ from keras.layers import (Input, concatenate, Conv2D, Lambda,
                           BatchNormalization,UpSampling2D, Conv3D, 
                           MaxPooling3D, UpSampling3D,LeakyReLU)
 from tensorflow.keras.optimizers import Adam, SGD, RMSprop, Adadelta
-from keras.utils import np_utils, generic_utils, layer_utils
-from keras.utils.data_utils import get_file
-from keras.utils.layer_utils import get_source_inputs
+import keras.utils
+# from keras.utils import np_utils, generic_utils, layer_utils
+from keras.utils import get_file
+from keras.utils import get_source_inputs
 from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import preprocess_input
 from keras_applications.imagenet_utils import _obtain_input_shape

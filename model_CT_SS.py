@@ -10,9 +10,9 @@ modified by Abhinav Ganesh 06/18/2022
 
 import os
 import numpy as np
-from keras.layers.core import Lambda
+from keras.layers import LSTM
 from keras.models import Model
-from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
+#from tensorflow.python.keras.utils.multi_gpu_utils import multi_gpu_model
 from keras import backend as K
 from keras.layers import (Input, concatenate, Conv2D, 
                           MaxPooling2D, Conv2DTranspose, Activation, 
@@ -20,12 +20,12 @@ from keras.layers import (Input, concatenate, Conv2D,
                           Dense, ZeroPadding2D, AveragePooling2D,
                           GlobalAveragePooling2D, GlobalMaxPooling2D,
                           BatchNormalization)
-from keras.utils import np_utils
+import tensorflow.keras.utils
 from deepModels import Unet, Unet3D
 from sklearn import metrics
 import nibabel as nb
 from sklearn.model_selection import KFold
-from tensorflow.keras.optimizers import Adam, SGD, RMSprop, Adadelta
+from tensorflow.keras.optimizers.legacy import Adam, SGD, RMSprop, Adadelta
 import SimpleITK as sitk
 from  scipy.ndimage.interpolation import zoom as interp3D
 from load3Ddata import arrangeData as arrange3Ddata
@@ -34,6 +34,8 @@ from load3Ddata import arrange3DtestImage,arrange3DtestLabel
 # more imports so I can save the masked image directly
 import nilearn
 import nilearn.masking
+
+code_dir = 'CT_BET_4colab'
 
 class Unet_CT_SS(object):
 
@@ -178,7 +180,7 @@ class Unet_CT_SS(object):
       
     def loadTestData(self,images_path,labels_path, each):
         images = nb.load(os.path.join(images_path,each)).get_data()
-        affine = nb.load(os.path.join(images_path,each)).get_affine()
+        affine = nb.load(os.path.join(images_path,each)).affine # .get_affine()
         [self.img_rows,self.img_cols,self.numImgs] = images.shape
         images = images.transpose(2,0,1).reshape(self.numImgs, self.img_rows,self.img_cols,1).astype(self.dtype)
         if self.testLabelFlag:
@@ -559,8 +561,8 @@ class Unet_CT_SS(object):
       
     def Predict(self, weights): 
         test_images_path, test_labels_path = self.arrangeDataPath(self.root_folder,self.image_folder,self.mask_folder)
-        test_images_path = 'CT_BET/image_data'
-        test_labels_path = 'CT_BET/mask_data'
+        test_images_path = os.path.join(code_dir, 'image_data')
+        test_labels_path = os.path.join(code_dir, 'mask_data')
 
         print('-'*30)
         print('Loading saved weights...')

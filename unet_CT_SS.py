@@ -15,7 +15,7 @@ arg0 = sys.argv[0]
 print(arg0)
 
 
-code_dir='CT_BET'
+code_dir='CT_BET_4colab'
 hour = str(time.localtime()[3])
 mins = str(time.localtime()[4])
 sec = str(time.localtime()[5])
